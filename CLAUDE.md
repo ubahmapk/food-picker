@@ -14,3 +14,12 @@
 
 API-first Flask app. All business logic is in `/api/` blueprint (JSON responses via orjson).
 The SPA at `/static/index.html` calls the API. Data is stored in `places.toml` (atomic writes).
+
+## Release process
+
+1. Update `CHANGELOG.md`: move `[Unreleased]` → `[x.y.z] - YYYY-MM-DD`, add fresh empty `[Unreleased]` above, update comparison link at bottom
+2. `git add CHANGELOG.md && git commit -m "chore: release vx.y.z"`
+3. `git tag vx.y.z && git push origin vx.y.z`
+4. CI builds the Docker image → pushes to GHCR → creates GitHub Release automatically
+
+Semver: new feature = minor bump, bug fix = patch, breaking API change = major.
