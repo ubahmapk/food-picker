@@ -159,6 +159,7 @@ food-picker/
 ├── docker-compose.yml
 ├── Caddyfile
 ├── .env.example
+├── CHANGELOG.md                      # Keep a Changelog format; update before each release tag
 ├── README.md                         # human-useful: setup, usage, API reference, deployment
 ├── PLAN.md                           # this planning document (implementation roadmap)
 ├── .claude/
@@ -640,6 +641,27 @@ updates:
     schedule:
       interval: "weekly"
 ```
+
+---
+
+## Operational Tooling
+
+### CHANGELOG.md
+
+Follows [Keep a Changelog](https://keepachangelog.com/en/1.1.0/) + Semantic Versioning 2.0.0. All changes accumulate under `[Unreleased]`. When cutting a release:
+1. Rename `[Unreleased]` → `[x.y.z] - YYYY-MM-DD`
+2. Add a fresh empty `[Unreleased]` section above it
+3. Update the comparison link at the bottom of the file
+4. Commit `CHANGELOG.md` before tagging
+
+Semver guidance: new feature = minor, bug fix = patch, breaking API change = major. Pre-1.0 (`0.y.z`): minor bumps may include breaking changes per semver convention.
+
+### Claude Code Memory
+
+Project-specific memory lives at `.claude/projects/.../memory/`. Current entries:
+- `feedback_release_workflow.md` — instructs Claude to update `CHANGELOG.md` before tagging; includes semver bump guidance
+
+Memory is the right tool for judgment-based workflow rules (determining what changed, choosing the version bump, writing prose); hooks are for deterministic shell operations (format, lint, validate).
 
 ---
 
