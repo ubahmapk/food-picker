@@ -7,5 +7,5 @@
 - [x] Add the ability to rename a category (like we can with a place)
     - Ensure that category renames apply to all places already using that category
 - [x] Make the top "logo" header area a hyperlink to the main page
-- [ ] Create an "About" page
+- [x] Create an "About" page
 - [x] Add error handling (default blank list?) if the `places.toml` file is missing or invalid

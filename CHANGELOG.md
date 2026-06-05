@@ -9,6 +9,8 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ### Added
 
+- About page accessible from the nav bar; fetches app info from `GET /api/about`
+- `GET /api/about` endpoint returning app name, description, repo URL, and tech stack
 - `PUT /api/categories/<name>` endpoint to rename a category; rename cascades to all places that use it
 - Inline category rename in the Manage → Categories tab (same Edit/Save/Cancel pattern as place editing)
 - "Add Place" and "Add Category" forms moved to the top of their respective Manage tabs, above the list of existing items
