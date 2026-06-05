@@ -210,19 +210,32 @@ food-picker/
 
 ## Frontend (SPA)
 
-- **`index.html`**: Minimal shell — loads Pico CSS from CDN, loads `app.js`, has a `<main>` container.
-- **`app.js`**: Vanilla JS. On load: `GET /api/categories` + `GET /api/places` to populate the UI. No frameworks, no build step, no TypeScript (keeps it simple for a family tool).
+- **`index.html`**: Shell — loads Pico CSS v2 from CDN, FOUC-prevention inline `<script>` applies saved theme before paint, loads `app.js` + `style.css`.
+- **`app.js`**: Vanilla JS. On load: `GET /api/categories` + `GET /api/places` to populate the UI. No frameworks, no build step, no TypeScript.
+- **`style.css`**: Custom overrides on top of Pico CSS. All colors use Pico CSS semantic variables (`--pico-muted-border-color`, `--pico-muted-background`, `--pico-color`, etc.) so they adapt automatically to dark/light mode.
+
+**Theme toggle**
+
+The nav bar includes a 🌓/☀️/🌙 button that cycles `auto → light → dark → auto`. The selection is persisted in `localStorage` and applied via `data-theme` on `<html>`. In `auto` mode, `data-theme` is removed and Pico CSS follows the OS `prefers-color-scheme` media query. An inline `<script>` in `<head>` applies the saved theme before any CSS loads, preventing flash.
 
 **Home view** (mobile-first layout):
-1. Category toggles (tappable chips, not tiny checkboxes)
-2. "Pick for me" button → `GET /api/pick?categories=...`
-3. Result card: restaurant name, "Veto" button, "That's it!" button
-4. Veto: re-calls `GET /api/pick?categories=...&vetoed=...&vetoed=...`
+1. Category checkboxes (all checked by default)
+2. "Pick for Me" button → `GET /api/pick?categories=...`
+3. Result card: restaurant name, "Veto - Pick Again" button, "That's It!" button
+4. Veto: pushes name to `currentVetoed[]`, re-calls `GET /api/pick?categories=...&vetoed=...`; vetoed list is stateless — passed as query params, never stored server-side
+5. Vetoed places for the current session are listed below the result card; cleared on accept
 
-**Manage view**:
-1. List of places with category tags; tap to edit, swipe/button to delete
-2. "Add place" form
-3. Category management section
+**Manage view** (tabbed):
+
+Three tabs rendered by Pico CSS `role="group"` button bar. Switching tabs hides/shows panels without re-fetching data.
+
+| Tab | Content |
+|-----|---------|
+| **Places** | Places list with Edit / Delete per row; inline edit expands the card with a name input and category checkboxes; Add Place form at the bottom |
+| **Categories** | Current categories with Delete per row (calls `DELETE /api/categories/<name>`); Add Category form at the bottom |
+| **Import / Export** | Export TOML / Export JSON buttons; file input + Import button |
+
+Inline place editing calls `PUT /api/places/<name>` with `{name?, categories}`. `escHtml()` is applied to all user-supplied strings before insertion into `innerHTML`.
 
 ---
 
@@ -307,8 +320,8 @@ dependencies = [
     "tomli-w>=1.0",
 ]
 
-[tool.uv]
-dev-dependencies = [
+[dependency-groups]
+dev = [
     "ruff>=0.9",
     "ty>=0.0.1a0",
     "bandit>=1.9",
@@ -660,9 +673,11 @@ The SPA at `/static/index.html` calls the API. Data is stored in `places.toml` (
 uv sync
 # Seed places.toml from choices.md (one-time)
 uv run python -m app.seed
-# Run dev server
-PLACES_FILE=./places.toml uv run flask --app app run --debug
+# Run dev server on port 8000 (avoids macOS AirPlay Receiver on port 5000)
+PLACES_FILE=./places.toml uv run flask --app app run --debug --port 8000
 ```
+
+> **macOS note**: `ControlCenter` (AirPlay Receiver) binds port 5000 on all interfaces and issues an HTTPS redirect. Always use `--port 8000` for local dev.
 
 **Run tests with coverage:**
 ```bash
@@ -672,23 +687,25 @@ Confirm ≥80% branch coverage reported; all tests pass before proceeding to Doc
 
 **API tests via curl:**
 ```bash
-curl http://localhost:5000/api/categories
-curl "http://localhost:5000/api/pick"
-curl "http://localhost:5000/api/pick?categories=Fast+Food"
-curl "http://localhost:5000/api/pick?categories=Fast+Food&vetoed=McDonalds"
-curl -X POST http://localhost:5000/api/places \
+curl http://localhost:8000/api/categories
+curl "http://localhost:8000/api/pick"
+curl "http://localhost:8000/api/pick?categories=Fast+Food"
+curl "http://localhost:8000/api/pick?categories=Fast+Food&vetoed=McDonalds"
+curl -X POST http://localhost:8000/api/places \
   -H "Content-Type: application/json" \
   -d '{"name": "Test Place", "categories": ["Fast Food"]}'
-curl http://localhost:5000/api/export?format=toml
-curl http://localhost:5000/api/export?format=json
+curl http://localhost:8000/api/export?format=toml
+curl http://localhost:8000/api/export?format=json
 ```
 
 **Web frontend tests:**
-- Open `http://localhost:5000` in a mobile browser or DevTools mobile emulation
-- Category toggles work; "Pick for me" returns a result
-- Veto accumulates correctly (same place never repeats in one session)
-- Manage view: add/edit/delete places and categories; verify `places.toml` updates on disk
-- Import: export a TOML, edit it, re-import; verify changes appear
+- Open `http://localhost:8000` in a mobile browser or DevTools mobile emulation
+- Category checkboxes work; "Pick for Me" returns a result
+- Veto accumulates correctly (same place never repeats in one session); vetoed list shown below result
+- Theme toggle (🌓/☀️/🌙) cycles modes; survives page reload
+- Manage → Places tab: edit a place name and categories inline; delete a place
+- Manage → Categories tab: add a category; delete a category (verify places stripped)
+- Manage → Import / Export: export TOML, edit it, re-import; verify changes appear
 
 ### Docker (no real domain)
 - Temporarily expose port 8000 on app service
