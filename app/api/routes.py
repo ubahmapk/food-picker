@@ -123,9 +123,21 @@ def reorder_categories():
 
 @api_bp.route("/places", methods=["GET"])
 def get_places():
+    selected_categories = request.args.getlist("categories")
+
     places_file = get_places_file()
     data = load_places(places_file)
-    return jsonify([p.model_dump() for p in data.places])
+
+    if not selected_categories:
+        selected_categories = data.categories
+
+    return jsonify(
+        [
+            p.model_dump()
+            for p in data.places
+            if any(cat in selected_categories for cat in p.categories)
+        ]
+    )
 
 
 @api_bp.route("/places", methods=["POST"])
