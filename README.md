@@ -2,6 +2,8 @@
 
 A fast, lightweight web app to randomly select a restaurant from curated lists. Perfect for family meal decisions.
 
+(Shamelessly vibe coded)
+
 **Live at**: [eat.starfleet.top](https://eat.starfleet.top)
 
 ## Quick Start
