@@ -9,6 +9,8 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ### Added
 
+- Claude Code memory rule: update `PLAN.md` after architectural and design decisions to keep the design record current across sessions
+- Claude Code hooks refactored: removed hardcoded project path (portable across workstations), split monolithic command into four separate hooks — one per file type (Python, TOML, YAML, docker-compose) — each with a guard clause for readability and maintainability
 - API-first Flask app: all business logic in `/api/*` JSON endpoints (curl-friendly)
 - `GET /api/pick` with optional `?categories=` filter and stateless `?vetoed=` accumulation; uses `secrets.choice()` to avoid PRNG bias
 - Full CRUD for places: `GET/POST /api/places`, `DELETE/PUT /api/places/<name>` (name and categories updatable independently)
