@@ -1,0 +1,35 @@
+[project]
+name = "food-picker"
+version = "0.1.0"
+description = "Fast food picker for family meals"
+readme = "README.md"
+requires-python = ">=3.14"
+dependencies = [
+    "flask>=3.0",
+    "gunicorn>=22.0",
+    "pydantic>=2.0",
+    "orjson>=3.0",
+    "tomli-w>=1.0",
+]
+
+[dependency-groups]
+dev = [
+    "ruff>=0.9",
+    "ty>=0.0.1a0",
+    "bandit>=1.9",
+    "pre-commit>=4.0",
+    "pytest>=8.0",
+    "pytest-cov>=6.0",
+]
+
+[tool.pytest.ini_options]
+addopts = "--cov=app --cov-report=term-missing --cov-fail-under=80"
+testpaths = ["tests"]
+pythonpath = ["."]
+
+[tool.coverage.run]
+branch = true
+omit = ["app/seed.py"]
+
+[tool.coverage.report]
+show_missing = true

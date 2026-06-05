@@ -1,0 +1,15 @@
+{
+  "hooks": {
+    "PostToolUse": [
+      {
+        "matcher": "Edit|Write",
+        "hooks": [
+          {
+            "type": "command",
+            "command": "cd /Users/ubahmapk/github/food-picker && file=$(echo \"$CLAUDE_TOOL_INPUT\" | python3 -c \"import sys,json; d=json.load(sys.stdin); print(d.get('file_path',''))\") && if [[ \"$file\" == *.py ]]; then uv run ruff format --config=.ruff.toml \"$file\" && uv run ruff check --fix --config=.ruff.toml \"$file\" && uv run ty check && uv run bandit -c .bandit.yml \"$file\"; elif [[ \"$file\" == *.toml ]]; then python3 -c \"import tomllib; tomllib.load(open('$file','rb'))\" && { [[ \"$file\" == *pyproject.toml ]] && uv lock || true; }; elif [[ \"$file\" == *.yaml || \"$file\" == *.yml ]]; then python3 -c \"import yaml; yaml.safe_load(open('$file'))\"; elif [[ \"$file\" == *docker-compose.yml ]]; then docker compose config > /dev/null; fi"
+          }
+        ]
+      }
+    ]
+  }
+}

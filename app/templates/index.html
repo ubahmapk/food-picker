@@ -1,0 +1,59 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Food Picker</title>
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@picocss/pico@2/css/pico.min.css">
+    <link rel="stylesheet" href="/static/style.css">
+</head>
+<body>
+    <nav class="container">
+        <h1>🍽️ Food Picker</h1>
+        <ul>
+            <li><a href="#" onclick="showHome(); return false;">Pick</a></li>
+            <li><a href="#" onclick="showManage(); return false;">Manage</a></li>
+        </ul>
+    </nav>
+
+    <main class="container">
+        <div id="home" class="view">
+            <h2>Select Categories</h2>
+            <div id="categories-list"></div>
+            <button id="pick-btn" onclick="makePick()">Pick for Me</button>
+            <div id="result" style="margin-top: 2rem;"></div>
+        </div>
+
+        <div id="manage" class="view" style="display: none;">
+            <h2>Manage Places & Categories</h2>
+
+            <h3>Add Category</h3>
+            <div style="margin-bottom: 1.5rem;">
+                <input type="text" id="new-category-input" placeholder="New category name">
+                <button onclick="addCategory()">Add</button>
+            </div>
+
+            <h3>Places</h3>
+            <div id="places-list"></div>
+
+            <h3>Add Place</h3>
+            <div style="margin-bottom: 1.5rem;">
+                <input type="text" id="new-place-input" placeholder="Place name">
+                <label>Categories:</label>
+                <div id="place-categories-list"></div>
+                <button onclick="addPlace()">Add Place</button>
+            </div>
+
+            <h3>Import / Export</h3>
+            <div>
+                <button onclick="exportData('toml')">Export as TOML</button>
+                <button onclick="exportData('json')">Export as JSON</button>
+                <input type="file" id="import-file" accept=".toml,.json">
+                <button onclick="importData()">Import</button>
+            </div>
+        </div>
+    </main>
+
+    <script src="/static/app.js"></script>
+</body>
+</html>

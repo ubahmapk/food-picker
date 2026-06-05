@@ -1,0 +1,227 @@
+categories = [
+    "Fast Food",
+    "Quality Nommings",
+    "Fancy Fixings",
+]
+
+[[places]]
+name = "Mcdonalds"
+categories = [
+    "Fast Food",
+]
+
+[[places]]
+name = "Whataburger"
+categories = [
+    "Fast Food",
+]
+
+[[places]]
+name = "Wendy's"
+categories = [
+    "Fast Food",
+]
+
+[[places]]
+name = "Arby's"
+categories = [
+    "Fast Food",
+]
+
+[[places]]
+name = "Chick-fil-a"
+categories = [
+    "Fast Food",
+]
+
+[[places]]
+name = "Firehouse Subs"
+categories = [
+    "Fast Food",
+]
+
+[[places]]
+name = "Taco Bell"
+categories = [
+    "Fast Food",
+]
+
+[[places]]
+name = "KFC"
+categories = [
+    "Fast Food",
+]
+
+[[places]]
+name = "Fuzzy's Tacos"
+categories = [
+    "Fast Food",
+]
+
+[[places]]
+name = "Sonic"
+categories = [
+    "Fast Food",
+]
+
+[[places]]
+name = "Chicken Express"
+categories = [
+    "Fast Food",
+]
+
+[[places]]
+name = "Panda Express"
+categories = [
+    "Fast Food",
+]
+
+[[places]]
+name = "Jimmy John's"
+categories = [
+    "Fast Food",
+]
+
+[[places]]
+name = "Raisin' Canes"
+categories = [
+    "Fast Food",
+]
+
+[[places]]
+name = "Jack-in-the-Box"
+categories = [
+    "Fast Food",
+]
+
+[[places]]
+name = "Dairy Queen"
+categories = [
+    "Fast Food",
+]
+
+[[places]]
+name = "Braums"
+categories = [
+    "Fast Food",
+]
+
+[[places]]
+name = "Subway"
+categories = [
+    "Fast Food",
+]
+
+[[places]]
+name = "Smoothie King"
+categories = [
+    "Fast Food",
+]
+
+[[places]]
+name = "Rosa's Cafe"
+categories = [
+    "Quality Nommings",
+]
+
+[[places]]
+name = "Mooyah"
+categories = [
+    "Quality Nommings",
+]
+
+[[places]]
+name = "Mcalister's Deli"
+categories = [
+    "Quality Nommings",
+]
+
+[[places]]
+name = "Jason's Deli"
+categories = [
+    "Quality Nommings",
+]
+
+[[places]]
+name = "Schlotsky's"
+categories = [
+    "Quality Nommings",
+]
+
+[[places]]
+name = "Gyro 360"
+categories = [
+    "Quality Nommings",
+]
+
+[[places]]
+name = "Mod Pizza"
+categories = [
+    "Quality Nommings",
+]
+
+[[places]]
+name = "Chipotle"
+categories = [
+    "Quality Nommings",
+]
+
+[[places]]
+name = "Five Guys"
+categories = [
+    "Quality Nommings",
+]
+
+[[places]]
+name = "iHop"
+categories = [
+    "Quality Nommings",
+]
+
+[[places]]
+name = "Freddy's Steakburgers"
+categories = [
+    "Quality Nommings",
+]
+
+[[places]]
+name = "Chilis"
+categories = [
+    "Fancy Fixings",
+]
+
+[[places]]
+name = "Applebees"
+categories = [
+    "Fancy Fixings",
+]
+
+[[places]]
+name = "Cracker Barrel"
+categories = [
+    "Fancy Fixings",
+]
+
+[[places]]
+name = "Old West Cafe"
+categories = [
+    "Fancy Fixings",
+]
+
+[[places]]
+name = "Buffalo Wild Wings"
+categories = [
+    "Fancy Fixings",
+]
+
+[[places]]
+name = "Texas Roadhouse"
+categories = [
+    "Fancy Fixings",
+]
+
+[[places]]
+name = "Outback Steakhouse"
+categories = [
+    "Fancy Fixings",
+]
