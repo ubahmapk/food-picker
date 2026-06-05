@@ -9,6 +9,8 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ### Added
 
+- `PUT /api/categories/<name>` endpoint to rename a category; rename cascades to all places that use it
+- Inline category rename in the Manage → Categories tab (same Edit/Save/Cancel pattern as place editing)
 - "Add Place" and "Add Category" forms moved to the top of their respective Manage tabs, above the list of existing items
 - Logo/header `🍽️ Food Picker` is now a hyperlink that navigates back to the home (Pick) view
 - Claude Code memory rule: update `PLAN.md` after architectural and design decisions to keep the design record current across sessions
