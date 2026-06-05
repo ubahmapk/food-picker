@@ -4,6 +4,12 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Food Picker</title>
+    <script>
+        (function () {
+            var t = localStorage.getItem("theme");
+            if (t && t !== "auto") document.documentElement.setAttribute("data-theme", t);
+        })();
+    </script>
     <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@picocss/pico@2/css/pico.min.css">
     <link rel="stylesheet" href="/static/style.css">
 </head>
@@ -13,6 +19,7 @@
         <ul>
             <li><a href="#" onclick="showHome(); return false;">Pick</a></li>
             <li><a href="#" onclick="showManage(); return false;">Manage</a></li>
+            <li><button id="theme-toggle" class="theme-btn outline" onclick="cycleTheme()">🌓</button></li>
         </ul>
     </nav>
 
@@ -22,6 +29,7 @@
             <div id="categories-list"></div>
             <button id="pick-btn" onclick="makePick()">Pick for Me</button>
             <div id="result" style="margin-top: 2rem;"></div>
+            <div id="veto-list" style="margin-top: 1rem;"></div>
         </div>
 
         <div id="manage" class="view" style="display: none;">

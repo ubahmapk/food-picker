@@ -2,6 +2,30 @@ let categories = [];
 let places = [];
 let currentVetoed = [];
 
+const THEMES = ["auto", "light", "dark"];
+const THEME_ICONS = { auto: "🌓", light: "☀️", dark: "🌙" };
+
+function applyTheme(theme) {
+    if (theme === "auto") {
+        document.documentElement.removeAttribute("data-theme");
+    } else {
+        document.documentElement.setAttribute("data-theme", theme);
+    }
+    localStorage.setItem("theme", theme);
+    const btn = document.getElementById("theme-toggle");
+    if (btn) btn.textContent = THEME_ICONS[theme];
+}
+
+function cycleTheme() {
+    const current = localStorage.getItem("theme") || "auto";
+    const next = THEMES[(THEMES.indexOf(current) + 1) % THEMES.length];
+    applyTheme(next);
+}
+
+function initTheme() {
+    applyTheme(localStorage.getItem("theme") || "auto");
+}
+
 async function loadData() {
     try {
         const catsRes = await fetch("/api/categories");
@@ -77,14 +101,28 @@ async function makePick() {
     }
 }
 
+function renderVetoList() {
+    const el = document.getElementById("veto-list");
+    if (currentVetoed.length === 0) {
+        el.innerHTML = "";
+        return;
+    }
+    el.innerHTML =
+        `<p><strong>Vetoed this session:</strong></p><ul>` +
+        currentVetoed.map((n) => `<li>${n}</li>`).join("") +
+        `</ul>`;
+}
+
 function veto(placeName) {
     currentVetoed.push(placeName);
+    renderVetoList();
     makePick();
 }
 
 function accept() {
     currentVetoed = [];
     document.getElementById("result").innerHTML = "";
+    renderVetoList();
 }
 
 async function addCategory() {
@@ -115,22 +153,87 @@ async function addCategory() {
     }
 }
 
-function renderPlacesList() {
+function escHtml(str) {
+    return str
+        .replace(/&/g, "&amp;")
+        .replace(/</g, "&lt;")
+        .replace(/>/g, "&gt;")
+        .replace(/"/g, "&quot;");
+}
+
+function renderPlacesList(editingName = null) {
     const container = document.getElementById("places-list");
     container.innerHTML = "";
 
     places.forEach((place) => {
         const item = document.createElement("article");
         item.style.padding = "1rem";
-        item.innerHTML = `
-            <strong>${place.name}</strong>
-            <p style="margin: 0.5rem 0;">
-                ${place.categories.map((c) => `<span style="background: #ddd; padding: 0.2rem 0.5rem; margin-right: 0.3rem; border-radius: 3px;">${c}</span>`).join("")}
-            </p>
-            <button onclick="deletePlace('${place.name.replace(/'/g, "\\'")}')">Delete</button>
-        `;
+        const safeName = place.name.replace(/'/g, "\\'");
+
+        if (place.name === editingName) {
+            const catChecks = categories
+                .map(
+                    (c) =>
+                        `<label style="display:flex;align-items:center;gap:0.4rem;margin:0.2rem 0;">` +
+                        `<input type="checkbox" class="edit-cat-checkbox" value="${escHtml(c)}"${place.categories.includes(c) ? " checked" : ""}> ${escHtml(c)}` +
+                        `</label>`,
+                )
+                .join("");
+            item.innerHTML = `
+                <input type="text" id="edit-name-input" value="${escHtml(place.name)}" style="margin-bottom:0.5rem;">
+                <div style="margin-bottom:0.75rem;">${catChecks}</div>
+                <button onclick="savePlace('${safeName}')">Save</button>
+                <button onclick="renderPlacesList()" class="secondary outline" style="margin-left:0.5rem;">Cancel</button>
+            `;
+        } else {
+            item.innerHTML = `
+                <strong>${escHtml(place.name)}</strong>
+                <p style="margin: 0.5rem 0;">
+                    ${place.categories.map((c) => `<span class="cat-tag">${escHtml(c)}</span>`).join("")}
+                </p>
+                <button onclick="editPlace('${safeName}')">Edit</button>
+                <button onclick="deletePlace('${safeName}')" class="secondary outline" style="margin-left:0.5rem;">Delete</button>
+            `;
+        }
         container.appendChild(item);
     });
+}
+
+function editPlace(name) {
+    renderPlacesList(name);
+}
+
+async function savePlace(originalName) {
+    const newName = document.getElementById("edit-name-input").value.trim();
+    const selectedCats = [];
+    document
+        .querySelectorAll(".edit-cat-checkbox:checked")
+        .forEach((cb) => selectedCats.push(cb.value));
+
+    if (!newName || selectedCats.length === 0) {
+        alert("Place name and at least one category are required");
+        return;
+    }
+
+    const payload = { categories: selectedCats };
+    if (newName !== originalName) payload.name = newName;
+
+    try {
+        const res = await fetch(`/api/places/${encodeURIComponent(originalName)}`, {
+            method: "PUT",
+            headers: { "Content-Type": "application/json" },
+            body: JSON.stringify(payload),
+        });
+
+        if (res.ok) {
+            await loadData();
+        } else {
+            const err = await res.json();
+            alert(`Error: ${err.error}`);
+        }
+    } catch (e) {
+        console.error("Error saving place:", e);
+    }
 }
 
 async function deletePlace(name) {
@@ -237,4 +340,5 @@ function showManage() {
     document.getElementById("manage").style.display = "block";
 }
 
+initTheme();
 loadData();

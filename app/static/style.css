@@ -3,7 +3,7 @@ nav {
     justify-content: space-between;
     align-items: center;
     padding: 1rem 0;
-    border-bottom: 1px solid #e0e0e0;
+    border-bottom: 1px solid var(--pico-muted-border-color);
 }
 
 nav h1 {
@@ -42,7 +42,7 @@ main {
 }
 
 article {
-    border: 1px solid #e0e0e0;
+    border: 1px solid var(--pico-muted-border-color);
     border-radius: 8px;
     margin-bottom: 1rem;
 }
@@ -71,6 +71,29 @@ button {
 #result h3 {
     font-size: 2rem;
     margin-bottom: 1rem;
+}
+
+.cat-tag {
+    background: var(--pico-muted-background);
+    color: var(--pico-color);
+    border: 1px solid var(--pico-muted-border-color);
+    padding: 0.2rem 0.5rem;
+    margin-right: 0.3rem;
+    border-radius: 3px;
+    font-size: 0.85em;
+}
+
+#veto-list {
+    color: var(--pico-muted-color);
+    font-size: 0.9rem;
+}
+
+.theme-btn {
+    padding: 0.2rem 0.5rem;
+    font-size: 1rem;
+    line-height: 1;
+    width: auto;
+    margin: 0;
 }
 
 @media (max-width: 600px) {
