@@ -33,31 +33,46 @@
         </div>
 
         <div id="manage" class="view" style="display: none;">
-            <h2>Manage Places & Categories</h2>
-
-            <h3>Add Category</h3>
-            <div style="margin-bottom: 1.5rem;">
-                <input type="text" id="new-category-input" placeholder="New category name">
-                <button onclick="addCategory()">Add</button>
+            <h2>Manage</h2>
+            <div role="group" id="manage-tabs">
+                <button id="tab-places"      class="tab-btn"         onclick="showManageTab('places')">Places</button>
+                <button id="tab-categories"  class="tab-btn outline" onclick="showManageTab('categories')">Categories</button>
+                <button id="tab-importexport" class="tab-btn outline" onclick="showManageTab('importexport')">Import / Export</button>
             </div>
 
-            <h3>Places</h3>
-            <div id="places-list"></div>
-
-            <h3>Add Place</h3>
-            <div style="margin-bottom: 1.5rem;">
-                <input type="text" id="new-place-input" placeholder="Place name">
-                <label>Categories:</label>
-                <div id="place-categories-list"></div>
-                <button onclick="addPlace()">Add Place</button>
+            <div id="manage-places" class="manage-panel">
+                <h3>Places</h3>
+                <div id="places-list"></div>
+                <h3>Add Place</h3>
+                <div style="margin-bottom: 1.5rem;">
+                    <input type="text" id="new-place-input" placeholder="Place name">
+                    <label>Categories:</label>
+                    <div id="place-categories-list"></div>
+                    <button onclick="addPlace()">Add Place</button>
+                </div>
             </div>
 
-            <h3>Import / Export</h3>
-            <div>
-                <button onclick="exportData('toml')">Export as TOML</button>
-                <button onclick="exportData('json')">Export as JSON</button>
-                <input type="file" id="import-file" accept=".toml,.json">
-                <button onclick="importData()">Import</button>
+            <div id="manage-categories" class="manage-panel" style="display: none;">
+                <h3>Categories</h3>
+                <div id="categories-manage-list"></div>
+                <h3>Add Category</h3>
+                <div style="margin-bottom: 1.5rem;">
+                    <input type="text" id="new-category-input" placeholder="New category name">
+                    <button onclick="addCategory()">Add</button>
+                </div>
+            </div>
+
+            <div id="manage-importexport" class="manage-panel" style="display: none;">
+                <h3>Import / Export</h3>
+                <div style="display: flex; flex-wrap: wrap; gap: 0.5rem; margin-bottom: 1.5rem;">
+                    <button onclick="exportData('toml')">Export as TOML</button>
+                    <button onclick="exportData('json')">Export as JSON</button>
+                </div>
+                <label>Import file</label>
+                <div style="display: flex; flex-wrap: wrap; gap: 0.5rem; align-items: center;">
+                    <input type="file" id="import-file" accept=".toml,.json" style="flex: 1;">
+                    <button onclick="importData()">Import</button>
+                </div>
             </div>
         </div>
     </main>

@@ -36,6 +36,7 @@ async function loadData() {
 
         renderCategoryToggles();
         renderPlacesList();
+        renderCategoriesManageList();
     } catch (e) {
         console.error("Error loading data:", e);
     }
@@ -338,6 +339,50 @@ function showHome() {
 function showManage() {
     document.getElementById("home").style.display = "none";
     document.getElementById("manage").style.display = "block";
+    showManageTab("places");
+}
+
+function showManageTab(tab) {
+    document.querySelectorAll(".manage-panel").forEach((el) => (el.style.display = "none"));
+    document.getElementById(`manage-${tab}`).style.display = "block";
+
+    document.querySelectorAll(".tab-btn").forEach((btn) => btn.classList.add("outline"));
+    document.getElementById(`tab-${tab}`).classList.remove("outline");
+}
+
+function renderCategoriesManageList() {
+    const container = document.getElementById("categories-manage-list");
+    if (!container) return;
+    container.innerHTML = "";
+
+    categories.forEach((cat) => {
+        const item = document.createElement("article");
+        item.style.padding = "1rem";
+        item.innerHTML =
+            `<strong>${escHtml(cat)}</strong>` +
+            `<button onclick="deleteCategory('${cat.replace(/'/g, "\\'")}') " ` +
+            `class="secondary outline" style="margin-left:0.5rem;">Delete</button>`;
+        container.appendChild(item);
+    });
+}
+
+async function deleteCategory(name) {
+    if (!confirm(`Delete category "${name}"? Places with only this category will also be removed.`)) return;
+
+    try {
+        const res = await fetch(`/api/categories/${encodeURIComponent(name)}`, {
+            method: "DELETE",
+        });
+
+        if (res.ok) {
+            await loadData();
+        } else {
+            const err = await res.json();
+            alert(`Error: ${err.error}`);
+        }
+    } catch (e) {
+        console.error("Error deleting category:", e);
+    }
 }
 
 initTheme();

@@ -96,6 +96,14 @@ button {
     margin: 0;
 }
 
+#manage-tabs {
+    margin-bottom: 1.5rem;
+}
+
+#manage-tabs .tab-btn {
+    width: auto;
+}
+
 @media (max-width: 600px) {
     nav {
         flex-direction: column;
