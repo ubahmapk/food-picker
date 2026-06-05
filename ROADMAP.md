@@ -8,4 +8,4 @@
     - Ensure that category renames apply to all places already using that category
 - [x] Make the top "logo" header area a hyperlink to the main page
 - [ ] Create an "About" page
-- [ ] Add error handling (default blank list?) if the `places.toml` file is missing or invalid
+- [x] Add error handling (default blank list?) if the `places.toml` file is missing or invalid
