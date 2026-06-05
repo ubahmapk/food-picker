@@ -15,7 +15,7 @@
 </head>
 <body>
     <nav class="container">
-        <h1>🍽️ Food Picker</h1>
+        <h1><a href="#" onclick="showHome(); return false;" style="text-decoration:none;color:inherit;">🍽️ Food Picker</a></h1>
         <ul>
             <li><a href="#" onclick="showHome(); return false;">Pick</a></li>
             <li><a href="#" onclick="showManage(); return false;">Manage</a></li>
@@ -41,8 +41,6 @@
             </div>
 
             <div id="manage-places" class="manage-panel">
-                <h3>Places</h3>
-                <div id="places-list"></div>
                 <h3>Add Place</h3>
                 <div style="margin-bottom: 1.5rem;">
                     <input type="text" id="new-place-input" placeholder="Place name">
@@ -50,16 +48,18 @@
                     <div id="place-categories-list"></div>
                     <button onclick="addPlace()">Add Place</button>
                 </div>
+                <h3>Places</h3>
+                <div id="places-list"></div>
             </div>
 
             <div id="manage-categories" class="manage-panel" style="display: none;">
-                <h3>Categories</h3>
-                <div id="categories-manage-list"></div>
                 <h3>Add Category</h3>
                 <div style="margin-bottom: 1.5rem;">
                     <input type="text" id="new-category-input" placeholder="New category name">
                     <button onclick="addCategory()">Add</button>
                 </div>
+                <h3>Categories</h3>
+                <div id="categories-manage-list"></div>
             </div>
 
             <div id="manage-importexport" class="manage-panel" style="display: none;">
