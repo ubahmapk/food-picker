@@ -16,6 +16,18 @@ from app.models import Place
 api_bp = Blueprint("api", __name__, url_prefix="/api")
 
 
+@api_bp.route("/about")
+def about():
+    return jsonify(
+        {
+            "name": "Food Picker",
+            "description": "Randomly pick a place to eat from your personal list.",
+            "repo": "https://github.com/ubahmapk/food-picker",
+            "tech": ["Flask", "Pydantic", "Pico CSS", "Vanilla JS", "TOML"],
+        }
+    )
+
+
 @api_bp.route("/categories", methods=["GET"])
 def get_categories():
     places_file = get_places_file()

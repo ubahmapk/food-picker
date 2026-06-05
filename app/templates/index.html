@@ -19,6 +19,7 @@
         <ul>
             <li><a href="#" onclick="showHome(); return false;">Pick</a></li>
             <li><a href="#" onclick="showManage(); return false;">Manage</a></li>
+            <li><a href="#" onclick="showAbout(); return false;">About</a></li>
             <li><button id="theme-toggle" class="theme-btn outline" onclick="cycleTheme()">🌓</button></li>
         </ul>
     </nav>
@@ -74,6 +75,11 @@
                     <button onclick="importData()">Import</button>
                 </div>
             </div>
+        </div>
+
+        <div id="about" class="view" style="display: none;">
+            <h2>About</h2>
+            <div id="about-content"></div>
         </div>
     </main>
 

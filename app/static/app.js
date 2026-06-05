@@ -335,12 +335,36 @@ async function importData() {
 function showHome() {
     document.getElementById("home").style.display = "block";
     document.getElementById("manage").style.display = "none";
+    document.getElementById("about").style.display = "none";
 }
 
 function showManage() {
     document.getElementById("home").style.display = "none";
     document.getElementById("manage").style.display = "block";
+    document.getElementById("about").style.display = "none";
     showManageTab("places");
+}
+
+async function showAbout() {
+    document.getElementById("home").style.display = "none";
+    document.getElementById("manage").style.display = "none";
+    document.getElementById("about").style.display = "block";
+
+    try {
+        const res = await fetch("/api/about");
+        const data = await res.json();
+        document.getElementById("about-content").innerHTML = `
+            <p>${escHtml(data.description)}</p>
+            <dl>
+                <dt>Tech stack</dt>
+                <dd>${data.tech.map((t) => escHtml(t)).join(", ")}</dd>
+                <dt>Source</dt>
+                <dd><a href="${escHtml(data.repo)}" target="_blank" rel="noopener">${escHtml(data.repo)}</a></dd>
+            </dl>
+        `;
+    } catch (e) {
+        console.error("Error loading about:", e);
+    }
 }
 
 function showManageTab(tab) {
