@@ -63,6 +63,32 @@ def delete_category(name: str):
     return jsonify({"status": "deleted"}), 200
 
 
+@api_bp.route("/categories/<name>", methods=["PUT"])
+def rename_category(name: str):
+    places_file = get_places_file()
+    data = load_places(places_file)
+
+    if name not in data.categories:
+        return jsonify({"error": "category not found"}), 404
+
+    payload = request.get_json() or {}
+    new_name = payload.get("name", "").strip()
+
+    if not new_name:
+        return jsonify({"error": "name is required"}), 422
+
+    if new_name in data.categories and new_name != name:
+        return jsonify({"error": "category already exists"}), 409
+
+    data.categories = [new_name if c == name else c for c in data.categories]
+    for place in data.places:
+        place.categories = [new_name if c == name else c for c in place.categories]
+
+    save_places(places_file, data)
+
+    return jsonify({"name": new_name}), 200
+
+
 @api_bp.route("/categories", methods=["PUT"])
 def reorder_categories():
     places_file = get_places_file()

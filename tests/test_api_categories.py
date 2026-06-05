@@ -64,6 +64,53 @@ def test_delete_nonexistent_category(client):
     assert response.status_code == 404
 
 
+def test_rename_category_success(client):
+    response = client.put("/api/categories/Fast Food", json={"name": "Quick Bites"})
+
+    assert response.status_code == 200
+    assert response.get_json() == {"name": "Quick Bites"}
+
+    categories = client.get("/api/categories").get_json()
+    assert "Quick Bites" in categories
+    assert "Fast Food" not in categories
+
+
+def test_rename_category_cascades_to_places(client):
+    client.put("/api/categories/Fast Food", json={"name": "Quick Bites"})
+
+    places = client.get("/api/places").get_json()
+    for place in places:
+        assert "Fast Food" not in place["categories"]
+    all_cats = [c for p in places for c in p["categories"]]
+    assert "Quick Bites" in all_cats
+
+
+def test_rename_category_same_name(client):
+    response = client.put("/api/categories/Fast Food", json={"name": "Fast Food"})
+
+    assert response.status_code == 200
+    assert response.get_json() == {"name": "Fast Food"}
+
+
+def test_rename_category_duplicate_rejected(client):
+    response = client.put("/api/categories/Fast Food", json={"name": "Quality Nommings"})
+
+    assert response.status_code == 409
+    assert "already exists" in response.get_json()["error"]
+
+
+def test_rename_category_not_found(client):
+    response = client.put("/api/categories/Nonexistent", json={"name": "New Name"})
+
+    assert response.status_code == 404
+
+
+def test_rename_category_empty_name(client):
+    response = client.put("/api/categories/Fast Food", json={"name": ""})
+
+    assert response.status_code == 422
+
+
 def test_reorder_categories(client):
     response = client.put(
         "/api/categories",

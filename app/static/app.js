@@ -1,6 +1,7 @@
 let categories = [];
 let places = [];
 let currentVetoed = [];
+let editingCategory = null;
 
 const THEMES = ["auto", "light", "dark"];
 const THEME_ICONS = { auto: "🌓", light: "☀️", dark: "🌙" };
@@ -358,12 +359,58 @@ function renderCategoriesManageList() {
     categories.forEach((cat) => {
         const item = document.createElement("article");
         item.style.padding = "1rem";
-        item.innerHTML =
-            `<strong>${escHtml(cat)}</strong>` +
-            `<button onclick="deleteCategory('${cat.replace(/'/g, "\\'")}') " ` +
-            `class="secondary outline" style="margin-left:0.5rem;">Delete</button>`;
+        const safeCat = cat.replace(/'/g, "\\'");
+
+        if (cat === editingCategory) {
+            item.innerHTML =
+                `<input type="text" id="edit-category-input" value="${escHtml(cat)}" style="margin-bottom:0.5rem;">` +
+                `<button onclick="saveCategory('${safeCat}')">Save</button>` +
+                `<button onclick="cancelEditCategory()" class="secondary outline" style="margin-left:0.5rem;">Cancel</button>`;
+        } else {
+            item.innerHTML =
+                `<strong>${escHtml(cat)}</strong>` +
+                `<button onclick="editCategory('${safeCat}')" style="margin-left:0.5rem;">Edit</button>` +
+                `<button onclick="deleteCategory('${safeCat}')" ` +
+                `class="secondary outline" style="margin-left:0.5rem;">Delete</button>`;
+        }
         container.appendChild(item);
     });
+}
+
+function editCategory(name) {
+    editingCategory = name;
+    renderCategoriesManageList();
+}
+
+function cancelEditCategory() {
+    editingCategory = null;
+    renderCategoriesManageList();
+}
+
+async function saveCategory(oldName) {
+    const newName = document.getElementById("edit-category-input").value.trim();
+    if (!newName) {
+        alert("Category name is required");
+        return;
+    }
+
+    try {
+        const res = await fetch(`/api/categories/${encodeURIComponent(oldName)}`, {
+            method: "PUT",
+            headers: { "Content-Type": "application/json" },
+            body: JSON.stringify({ name: newName }),
+        });
+
+        if (res.ok) {
+            editingCategory = null;
+            await loadData();
+        } else {
+            const err = await res.json();
+            alert(`Error: ${err.error}`);
+        }
+    } catch (e) {
+        console.error("Error renaming category:", e);
+    }
 }
 
 async function deleteCategory(name) {
