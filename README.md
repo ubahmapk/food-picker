@@ -11,10 +11,12 @@ A fast, lightweight web app to randomly select a restaurant from curated lists. 
 ```bash
 uv sync
 uv run python -m app.seed  # one-time: migrate choices.md to places.toml
-PLACES_FILE=./places.toml uv run flask --app app run --debug
+PLACES_FILE=./places.toml uv run flask --app app run --debug --port 8000
 ```
 
-Visit `http://localhost:5000`. The app will auto-load from your local `places.toml`.
+Visit `http://localhost:8000`.
+
+> **macOS note**: Port 5000 is used by AirPlay Receiver (ControlCenter) and redirects to HTTPS. Always use `--port 8000` for local dev.
 
 ### Docker
 

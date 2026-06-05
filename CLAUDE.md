@@ -3,7 +3,7 @@
 ## Commands
 
 - `uv sync` — install all dependencies
-- `uv run flask --app app run --debug` — dev server (set PLACES_FILE=./places.toml)
+- `PLACES_FILE=./places.toml uv run flask --app app run --debug --port 8000` — dev server (port 8000 avoids macOS AirPlay on 5000)
 - `uv run pytest` — run tests with coverage
 - `uv run ruff check --config=.ruff.toml` — lint
 - `uv run ty check` — typecheck
