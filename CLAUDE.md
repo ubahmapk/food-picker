@@ -15,6 +15,8 @@
 API-first Flask app. All business logic is in `/api/` blueprint (JSON responses via orjson).
 The SPA at `/static/index.html` calls the API. Data is stored in `places.toml` (atomic writes).
 
+Design decisions have been documented in `PLAN.md` and serve as a sort-of record of why certain decisions were made and can re-establish the full design context cleanly.
+
 ## Release process
 
 1. Update `CHANGELOG.md`: move `[Unreleased]` → `[x.y.z] - YYYY-MM-DD`, add fresh empty `[Unreleased]` above, update comparison link at bottom

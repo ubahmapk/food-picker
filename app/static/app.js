@@ -49,7 +49,12 @@ function renderCategoryToggles() {
 
     categories.forEach((cat) => {
         const label = document.createElement("label");
-        label.innerHTML = `<input type="checkbox" id="cat-${cat}" checked> ${cat}`;
+        const cb = document.createElement("input");
+        cb.type = "checkbox";
+        cb.id = `cat-${encodeURIComponent(cat)}`;
+        cb.checked = true;
+        label.appendChild(cb);
+        label.appendChild(document.createTextNode(` ${cat}`));
         container.appendChild(label);
     });
 
@@ -57,7 +62,12 @@ function renderCategoryToggles() {
     placeList.innerHTML = "";
     categories.forEach((cat) => {
         const label = document.createElement("label");
-        label.innerHTML = `<input type="checkbox" class="place-cat-checkbox" value="${cat}"> ${cat}`;
+        const cb = document.createElement("input");
+        cb.type = "checkbox";
+        cb.className = "place-cat-checkbox";
+        cb.value = cat;
+        label.appendChild(cb);
+        label.appendChild(document.createTextNode(` ${cat}`));
         placeList.appendChild(label);
     });
 }
@@ -65,7 +75,7 @@ function renderCategoryToggles() {
 function getSelectedCategories() {
     const selected = [];
     categories.forEach((cat) => {
-        const checkbox = document.getElementById(`cat-${cat}`);
+        const checkbox = document.getElementById(`cat-${encodeURIComponent(cat)}`);
         if (checkbox && checkbox.checked) {
             selected.push(cat);
         }
@@ -93,11 +103,13 @@ async function makePick() {
 
         document.getElementById("result").innerHTML = `
             <article style="padding: 1.5rem; text-align: center;">
-                <h3>${data.name}</h3>
-                <button onclick="veto('${data.name.replace(/'/g, "\\'")}')">Veto - Pick Again</button>
-                <button onclick="accept()" style="margin-left: 0.5rem;">That's It!</button>
+                <h3>${escHtml(data.name)}</h3>
+                <button id="veto-btn" style="margin-right: 0.5rem;">Veto - Pick Again</button>
+                <button id="accept-btn" style="margin-left: 0.5rem;">That's It!</button>
             </article>
         `;
+        document.getElementById("veto-btn").addEventListener("click", () => veto(data.name));
+        document.getElementById("accept-btn").addEventListener("click", accept);
     } catch (e) {
         console.error("Error picking:", e);
     }
@@ -111,7 +123,7 @@ function renderVetoList() {
     }
     el.innerHTML =
         `<p><strong>Vetoed this session:</strong></p><ul>` +
-        currentVetoed.map((n) => `<li>${n}</li>`).join("") +
+        currentVetoed.map((n) => `<li>${escHtml(n)}</li>`).join("") +
         `</ul>`;
 }
 
@@ -170,8 +182,6 @@ function renderPlacesList(editingName = null) {
     places.forEach((place) => {
         const item = document.createElement("article");
         item.style.padding = "1rem";
-        const safeName = place.name.replace(/'/g, "\\'");
-
         if (place.name === editingName) {
             const catChecks = categories
                 .map(
@@ -184,18 +194,22 @@ function renderPlacesList(editingName = null) {
             item.innerHTML = `
                 <input type="text" id="edit-name-input" value="${escHtml(place.name)}" style="margin-bottom:0.5rem;">
                 <div style="margin-bottom:0.75rem;">${catChecks}</div>
-                <button onclick="savePlace('${safeName}')">Save</button>
-                <button onclick="renderPlacesList()" class="secondary outline" style="margin-left:0.5rem;">Cancel</button>
+                <button class="save-place-btn">Save</button>
+                <button class="cancel-place-btn secondary outline" style="margin-left:0.5rem;">Cancel</button>
             `;
+            item.querySelector(".save-place-btn").addEventListener("click", () => savePlace(place.name));
+            item.querySelector(".cancel-place-btn").addEventListener("click", () => renderPlacesList());
         } else {
             item.innerHTML = `
                 <strong>${escHtml(place.name)}</strong>
                 <p style="margin: 0.5rem 0;">
                     ${place.categories.map((c) => `<span class="cat-tag">${escHtml(c)}</span>`).join("")}
                 </p>
-                <button onclick="editPlace('${safeName}')">Edit</button>
-                <button onclick="deletePlace('${safeName}')" class="secondary outline" style="margin-left:0.5rem;">Delete</button>
+                <button class="edit-place-btn">Edit</button>
+                <button class="delete-place-btn secondary outline" style="margin-left:0.5rem;">Delete</button>
             `;
+            item.querySelector(".edit-place-btn").addEventListener("click", () => editPlace(place.name));
+            item.querySelector(".delete-place-btn").addEventListener("click", () => deletePlace(place.name));
         }
         container.appendChild(item);
     });
@@ -353,13 +367,14 @@ async function showAbout() {
     try {
         const res = await fetch("/api/about");
         const data = await res.json();
+        const safeRepo = data.repo.startsWith("https://") ? escHtml(data.repo) : "#";
         document.getElementById("about-content").innerHTML = `
             <p>${escHtml(data.description)}</p>
             <dl>
                 <dt>Tech stack</dt>
                 <dd>${data.tech.map((t) => escHtml(t)).join(", ")}</dd>
                 <dt>Source</dt>
-                <dd><a href="${escHtml(data.repo)}" target="_blank" rel="noopener">${escHtml(data.repo)}</a></dd>
+                <dd><a href="${safeRepo}" target="_blank" rel="noopener">${escHtml(data.repo)}</a></dd>
             </dl>
         `;
     } catch (e) {
@@ -383,19 +398,20 @@ function renderCategoriesManageList() {
     categories.forEach((cat) => {
         const item = document.createElement("article");
         item.style.padding = "1rem";
-        const safeCat = cat.replace(/'/g, "\\'");
-
         if (cat === editingCategory) {
             item.innerHTML =
                 `<input type="text" id="edit-category-input" value="${escHtml(cat)}" style="margin-bottom:0.5rem;">` +
-                `<button onclick="saveCategory('${safeCat}')">Save</button>` +
-                `<button onclick="cancelEditCategory()" class="secondary outline" style="margin-left:0.5rem;">Cancel</button>`;
+                `<button class="save-cat-btn">Save</button>` +
+                `<button class="cancel-cat-btn secondary outline" style="margin-left:0.5rem;">Cancel</button>`;
+            item.querySelector(".save-cat-btn").addEventListener("click", () => saveCategory(cat));
+            item.querySelector(".cancel-cat-btn").addEventListener("click", cancelEditCategory);
         } else {
             item.innerHTML =
                 `<strong>${escHtml(cat)}</strong>` +
-                `<button onclick="editCategory('${safeCat}')" style="margin-left:0.5rem;">Edit</button>` +
-                `<button onclick="deleteCategory('${safeCat}')" ` +
-                `class="secondary outline" style="margin-left:0.5rem;">Delete</button>`;
+                `<button class="edit-cat-btn" style="margin-left:0.5rem;">Edit</button>` +
+                `<button class="delete-cat-btn secondary outline" style="margin-left:0.5rem;">Delete</button>`;
+            item.querySelector(".edit-cat-btn").addEventListener("click", () => editCategory(cat));
+            item.querySelector(".delete-cat-btn").addEventListener("click", () => deleteCategory(cat));
         }
         container.appendChild(item);
     });
