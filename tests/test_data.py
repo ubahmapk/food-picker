@@ -144,6 +144,20 @@ def test_load_places_auto_creates_when_missing(tmp_places_file):
     assert Path(tmp_places_file).exists()
 
 
+def test_load_places_invalid_toml(tmp_places_file):
+    Path(tmp_places_file).write_bytes(b"this is not [valid toml !!!")
+    result = load_places(tmp_places_file)
+    assert result.categories == []
+    assert result.places == []
+
+
+def test_load_places_invalid_schema(tmp_places_file):
+    Path(tmp_places_file).write_bytes(b'categories = "not-a-list"\n')
+    result = load_places(tmp_places_file)
+    assert result.categories == []
+    assert result.places == []
+
+
 def test_place_validation_empty_name():
     with pytest.raises(ValidationError):
         Place(name="", categories=["Test"])

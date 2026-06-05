@@ -19,10 +19,12 @@ def load_places(path: str) -> PlacesData:
     if not path_obj.exists():
         migrate_from_choices_md(Path(path).parent / "choices.md", path)
 
-    with Path(path).open("rb") as f:
-        data = tomllib.load(f)
-
-    return PlacesData.model_validate(data)
+    try:
+        with path_obj.open("rb") as f:
+            data = tomllib.load(f)
+        return PlacesData.model_validate(data)
+    except Exception:
+        return PlacesData(categories=[], places=[])
 
 
 def save_places(path: str, data: PlacesData) -> None:
